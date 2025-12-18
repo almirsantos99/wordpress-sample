@@ -1,0 +1,8 @@
+# Ignore
+/plugins/*
+/themes/*
+index.php
+
+# Add
+!/plugins/knowledge-sample-plugin
+!/themes/knowledge-sample-theme
