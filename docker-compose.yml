@@ -1,0 +1,30 @@
+services:
+  ks_db:
+    image: 'mariadb:10.5.1'
+    container_name: ks_db
+    volumes:
+      - './mysql:/var/lib/mysql'
+      #- ./dump.sql.gz:/docker-entrypoint-initdb.d/dump.sql.gz
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: ks
+      MYSQL_ROOT_PASSWORD: pass
+    # Set max_allowed_packet to 256M (or any other value)
+    command: --max_allowed_packet=32505856
+  ks_web:
+    image: webdevops/php-nginx-dev:8.3
+    container_name: ks_web
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - ks_db
+    volumes:
+      - './:/var/www/html'
+      - ./localhost.crt:/opt/docker/etc/nginx/ssl/server.crt
+      - ./localhost.key:/opt/docker/etc/nginx/ssl/server.key
+      #- ./10-location-root.conf:/opt/docker/etc/nginx/vhost.common.d/10-location-root.conf
+    environment:
+      WEB_DOCUMENT_ROOT: /var/www/html/public
